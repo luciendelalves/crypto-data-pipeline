@@ -4,9 +4,91 @@ Pipeline completo de Engenharia de Dados para coleta, transformação e visualiz
 
 ## 📊 Arquitetura
 ```
-API CoinGecko → Python Script → PostgreSQL (Raw) → dbt (Transformação) → PostgreSQL (Analytics) → Metabase (Dashboard)
-                                        ↓
-                                Apache Airflow (Orquestração)
+## 📊 Arquitetura
+```mermaid
+graph LR
+    A[CoinGecko API] -->|HTTP Request| B[Python Script]
+    B -->|INSERT| C[(PostgreSQL<br/>Raw Layer)]
+    C -->|dbt run| D[(PostgreSQL<br/>Staging Layer)]
+    D -->|dbt run| E[(PostgreSQL<br/>Analytics Layer)]
+    E -->|SQL Query| F[Metabase Dashboard]
+    G[Apache Airflow] -.->|Orchestrates| B
+    G -.->|Triggers| D
+    
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style C fill:#bbf,stroke:#333,stroke-width:2px
+    style D fill:#bfb,stroke:#333,stroke-width:2px
+    style E fill:#fbb,stroke:#333,stroke-width:2px
+    style F fill:#ff9,stroke:#333,stroke-width:2px
+    style G fill:#f96,stroke:#333,stroke-width:2px
+```
+
+### Pipeline Flow
+```
+┌─────────────────┐
+│  CoinGecko API  │
+└────────┬────────┘
+         │ JSON Response (20 cryptos)
+         ▼
+┌─────────────────┐
+│ extract_crypto_ │
+│    data.py      │
+└────────┬────────┘
+         │ INSERT
+         ▼
+┌─────────────────┐
+│   PostgreSQL    │
+│   Raw Layer     │
+│ (raw.crypto_    │
+│    prices)      │
+└────────┬────────┘
+         │
+         │ dbt run
+         ▼
+┌─────────────────┐
+│  Staging Layer  │
+│ (staging.stg_   │
+│ crypto_prices)  │
+└────────┬────────┘
+         │
+         │ dbt run
+         ▼
+┌─────────────────┐
+│ Analytics Layer │
+│ (analytics.     │
+│ crypto_metrics) │
+└────────┬────────┘
+         │
+         │ SQL Query
+         ▼
+┌─────────────────┐
+│    Metabase     │
+│    Dashboard    │
+└─────────────────┘
+
+       ⬆️
+   Orchestrated by
+  Apache Airflow
+ (every 15 minutes)
+```
+## 📸 Screenshots
+
+### Apache Airflow - Pipeline Automatizado
+![Airflow Pipeline](images/airflow-pipeline.png)
+*Pipeline completo rodando: extração de dados → transformação dbt*
+
+### Metabase - Dashboard Interativo
+![Metabase Dashboard](images/metabase-dashboard.png)
+*Visualização em tempo real das métricas de criptomoedas*
+
+### dbt - Linhagem de Dados
+```
+models/
+├── staging/
+│   └── stg_crypto_prices.sql  → Limpa e padroniza
+└── marts/
+    └── crypto_metrics.sql     → Métricas de negócio
+```
 ```
 
 ## 🛠️ Tecnologias Utilizadas
