@@ -134,8 +134,6 @@ Este projeto demonstra:
 
 ## 👨‍💻 Autor
 
-## 👨‍💻 Autor
-
 **Luciendel Alves**
 - GitHub: [@luciendelalves](https://github.com/luciendelalves)
 - LinkedIn: [Luciendel Alves](https://www.linkedin.com/in/luciendelalves/)
