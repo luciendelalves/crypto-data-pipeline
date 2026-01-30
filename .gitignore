@@ -1,0 +1,31 @@
+notepad .gitignore
+```
+
+**Cole este conteúdo** (para não subir arquivos desnecessários):
+```
+# Logs e dados temporários
+logs/
+data/
+*.log
+
+# dbt
+dbt/target/
+dbt/dbt_packages/
+dbt/logs/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+
+# Airflow
+airflow.db
+airflow.cfg
+webserver_config.py
+
+# Docker
+.env

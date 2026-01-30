@@ -1,0 +1,18 @@
+version: 2
+
+sources:
+  - name: raw
+    database: crypto_data
+    schema: raw
+    tables:
+      - name: crypto_prices
+        description: "Dados brutos de criptomoedas da API CoinGecko"
+        columns:
+          - name: id
+            description: "ID único do registro"
+          - name: symbol
+            description: "Símbolo da criptomoeda (btc, eth, etc)"
+          - name: name
+            description: "Nome completo da criptomoeda"
+          - name: current_price
+            description: "Preço atual em USD"
