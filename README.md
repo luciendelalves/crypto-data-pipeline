@@ -153,7 +153,7 @@ crypto-pipeline/
 
 1. **Clone o repositório:**
 ```bash
-git clone https://github.com/SEU_USUARIO/crypto-data-pipeline.git
+git clone https://github.com/luciendelalves/crypto-data-pipeline.git
 cd crypto-data-pipeline
 ```
 
