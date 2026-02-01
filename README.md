@@ -3,8 +3,7 @@
 Pipeline completo de Engenharia de Dados para coleta, transformação e visualização de dados de criptomoedas em tempo real.
 
 ## 📊 Arquitetura
-```
-## 📊 Arquitetura
+
 ```mermaid
 graph LR
     A[CoinGecko API] -->|HTTP Request| B[Python Script]
@@ -24,6 +23,7 @@ graph LR
 ```
 
 ### Pipeline Flow
+
 ```
 ┌─────────────────┐
 │  CoinGecko API  │
@@ -71,6 +71,7 @@ graph LR
   Apache Airflow
  (every 15 minutes)
 ```
+
 ## 📸 Screenshots
 
 ### Apache Airflow - Pipeline Automatizado
@@ -89,7 +90,6 @@ models/
 └── marts/
     └── crypto_metrics.sql     → Métricas de negócio
 ```
-```
 
 ## 🛠️ Tecnologias Utilizadas
 
@@ -102,6 +102,7 @@ models/
 - **CoinGecko API** - Fonte de dados
 
 ## 🏗️ Estrutura do Projeto
+
 ```
 crypto-pipeline/
 ├── dags/                          # DAGs do Airflow
