@@ -8,8 +8,8 @@ de preços de criptomoedas em tempo real, com atualização automática a cada
 
 ## Contexto
 
-O objetivo foi construir um pipeline completo do zero — da extração de dados
-de uma API pública até um dashboard interativo — aplicando boas práticas de
+O objetivo foi construir um pipeline completo do zero, da extração de dados
+de uma API pública até um dashboard interativo, aplicando boas práticas de
 engenharia de dados como arquitetura em camadas, orquestração e
 containerização.
 
@@ -39,24 +39,24 @@ CoinGecko API
 
 ## Stack
 
-- Python — extração de dados da API
-- Apache Airflow — orquestração do pipeline
-- PostgreSQL — armazenamento em camadas
-- dbt — transformação e modelagem
-- Metabase — visualização
-- Docker — containerização do ambiente
+- Python -> extração de dados da API
+- Apache Airflow -> orquestração do pipeline
+- PostgreSQL -> armazenamento em camadas
+- dbt -> transformação e modelagem
+- Metabase -> visualização
+- Docker -> containerização do ambiente
 
 ---
 
 ## Camadas de Dados
 
-**Raw** — dado bruto exatamente como veio da API CoinGecko.
+**Raw** - dado bruto exatamente como veio da API CoinGecko.
 Schema: `raw.crypto_prices`
 
-**Staging** — dados limpos e padronizados pelo dbt.
+**Staging** - dados limpos e padronizados pelo dbt.
 Schema: `staging.stg_crypto_prices`
 
-**Analytics** — métricas prontas para consumo: classificação de volatilidade
+**Analytics** - métricas prontas para consumo: classificação de volatilidade
 (Alta/Média/Baixa), categorização de market cap (Large/Mid/Small Cap) e
 identificação de tendência (Subindo/Caindo/Estável).
 Schema: `analytics.crypto_metrics`
@@ -121,6 +121,6 @@ clicando em play.
 ## Autor
 
 **Luciendel Alves**
-Analista de Risco & PLD — iGaming
+Analista de Risco & PLD - iGaming
 [LinkedIn](https://www.linkedin.com/in/luciendel-alves-008321107/) ·
 [GitHub](https://github.com/luciendelalves)
