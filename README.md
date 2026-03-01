@@ -1,226 +1,126 @@
-# 🚀 Crypto Data Pipeline
+# Crypto Data Pipeline
 
-Pipeline completo de Engenharia de Dados para coleta, transformação e visualização de dados de criptomoedas em tempo real.
+Pipeline de engenharia de dados para coleta, transformação e visualização
+de preços de criptomoedas em tempo real, com atualização automática a cada
+15 minutos.
 
-## 📊 Arquitetura
+---
 
-```mermaid
-graph LR
-    A[CoinGecko API] -->|HTTP Request| B[Python Script]
-    B -->|INSERT| C[(PostgreSQL<br/>Raw Layer)]
-    C -->|dbt run| D[(PostgreSQL<br/>Staging Layer)]
-    D -->|dbt run| E[(PostgreSQL<br/>Analytics Layer)]
-    E -->|SQL Query| F[Metabase Dashboard]
-    G[Apache Airflow] -.->|Orchestrates| B
-    G -.->|Triggers| D
-    
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style C fill:#bbf,stroke:#333,stroke-width:2px
-    style D fill:#bfb,stroke:#333,stroke-width:2px
-    style E fill:#fbb,stroke:#333,stroke-width:2px
-    style F fill:#ff9,stroke:#333,stroke-width:2px
-    style G fill:#f96,stroke:#333,stroke-width:2px
+## Contexto
+
+O objetivo foi construir um pipeline completo do zero — da extração de dados
+de uma API pública até um dashboard interativo — aplicando boas práticas de
+engenharia de dados como arquitetura em camadas, orquestração e
+containerização.
+
+---
+
+## Arquitetura
+```
+CoinGecko API
+      ↓
+  Python (extração)
+      ↓
+  PostgreSQL — Raw Layer
+  dado bruto, sem transformação
+      ↓
+  dbt — Staging Layer
+  limpeza e padronização
+      ↓
+  dbt — Analytics Layer
+  métricas de negócio
+      ↓
+  Metabase Dashboard
+
+  Orquestrado pelo Apache Airflow (a cada 15 minutos)
 ```
 
-### Pipeline Flow
+---
 
-```
-┌─────────────────┐
-│  CoinGecko API  │
-└────────┬────────┘
-         │ JSON Response (20 cryptos)
-         ▼
-┌─────────────────┐
-│ extract_crypto_ │
-│    data.py      │
-└────────┬────────┘
-         │ INSERT
-         ▼
-┌─────────────────┐
-│   PostgreSQL    │
-│   Raw Layer     │
-│ (raw.crypto_    │
-│    prices)      │
-└────────┬────────┘
-         │
-         │ dbt run
-         ▼
-┌─────────────────┐
-│  Staging Layer  │
-│ (staging.stg_   │
-│ crypto_prices)  │
-└────────┬────────┘
-         │
-         │ dbt run
-         ▼
-┌─────────────────┐
-│ Analytics Layer │
-│ (analytics.     │
-│ crypto_metrics) │
-└────────┬────────┘
-         │
-         │ SQL Query
-         ▼
-┌─────────────────┐
-│    Metabase     │
-│    Dashboard    │
-└─────────────────┘
+## Stack
 
-       ⬆️
-   Orchestrated by
-  Apache Airflow
- (every 15 minutes)
-```
+- Python — extração de dados da API
+- Apache Airflow — orquestração do pipeline
+- PostgreSQL — armazenamento em camadas
+- dbt — transformação e modelagem
+- Metabase — visualização
+- Docker — containerização do ambiente
 
-## 📸 Screenshots
+---
 
-### Apache Airflow - Pipeline Automatizado
-![Airflow Pipeline](images/airflow-pipeline.png)
-*Pipeline completo rodando: extração de dados → transformação dbt*
+## Camadas de Dados
 
-### Metabase - Dashboard Interativo
-![Metabase Dashboard](images/metabase-dashboard.png)
-*Visualização em tempo real das métricas de criptomoedas*
+**Raw** — dado bruto exatamente como veio da API CoinGecko.
+Schema: `raw.crypto_prices`
 
-### dbt - Linhagem de Dados
-```
-models/
-├── staging/
-│   └── stg_crypto_prices.sql  → Limpa e padroniza
-└── marts/
-    └── crypto_metrics.sql     → Métricas de negócio
-```
+**Staging** — dados limpos e padronizados pelo dbt.
+Schema: `staging.stg_crypto_prices`
 
-## 🛠️ Tecnologias Utilizadas
+**Analytics** — métricas prontas para consumo: classificação de volatilidade
+(Alta/Média/Baixa), categorização de market cap (Large/Mid/Small Cap) e
+identificação de tendência (Subindo/Caindo/Estável).
+Schema: `analytics.crypto_metrics`
 
-- **Docker & Docker Compose** - Containerização
-- **Apache Airflow** - Orquestração de pipelines
-- **PostgreSQL** - Data Warehouse
-- **dbt (data build tool)** - Transformação de dados
-- **Metabase** - Visualização e dashboards
-- **Python** - Scripts de extração
-- **CoinGecko API** - Fonte de dados
+---
 
-## 🏗️ Estrutura do Projeto
-
+## Estrutura
 ```
 crypto-pipeline/
-├── dags/                          # DAGs do Airflow
-│   ├── crypto_pipeline_dag.py     # Pipeline de extração
-│   └── crypto_pipeline_complete.py # Pipeline completo (extração + transformação)
-├── scripts/                       # Scripts Python
-│   ├── extract_crypto_data.py     # Extração de dados da API
-│   └── init_db.sql               # Inicialização do banco
-├── dbt/                          # Projeto dbt
+├── dags/
+│   ├── crypto_pipeline_dag.py
+│   └── crypto_pipeline_complete.py
+├── scripts/
+│   ├── extract_crypto_data.py
+│   └── init_db.sql
+├── dbt/
 │   ├── models/
-│   │   ├── staging/              # Camada Silver (dados limpos)
+│   │   ├── staging/
 │   │   │   ├── stg_crypto_prices.sql
 │   │   │   └── schema.yml
-│   │   └── marts/                # Camada Gold (métricas de negócio)
+│   │   └── marts/
 │   │       └── crypto_metrics.sql
 │   ├── dbt_project.yml
 │   └── profiles.yml
-└── docker-compose.yml            # Configuração dos containers
+└── docker-compose.yml
 ```
 
-## 🎯 Camadas de Dados (Medallion Architecture)
+---
 
-### 🥉 Bronze Layer (Raw)
-- Dados brutos da API CoinGecko
-- Schema: `raw.crypto_prices`
-- Atualização: A cada 15 minutos
+## Como executar
 
-### 🥈 Silver Layer (Staging)
-- Dados limpos e padronizados
-- Schema: `staging.stg_crypto_prices`
-- Validações de qualidade aplicadas
-
-### 🥇 Gold Layer (Analytics)
-- Métricas prontas para negócio
-- Schema: `analytics.crypto_metrics`
-- Inclui:
-  - Classificação de volatilidade (Alta/Média/Baixa)
-  - Categorização de market cap (Large/Mid/Small Cap)
-  - Identificação de tendências (Subindo/Caindo/Estável)
-
-## 🚀 Como Executar
-
-### Pré-requisitos
-- Docker Desktop instalado
-- 8GB de RAM disponível
-- Portas livres: 5433, 8081, 3001
-
-### Passo a Passo
-
-1. **Clone o repositório:**
+**Pré-requisitos:** Docker Desktop e 8GB de RAM. Portas livres: 5433, 8081, 3001.
 ```bash
+# 1. Clone o repositório
 git clone https://github.com/luciendelalves/crypto-data-pipeline.git
 cd crypto-data-pipeline
+
+# 2. Suba os containers
+docker compose up -d
+
+# 3. Aguarde 2-3 minutos para inicialização
+
+# 4. Acesse as interfaces
+# Airflow:  http://localhost:8081  (admin / admin)
+# Metabase: http://localhost:3001
 ```
 
-2. **Suba os containers:**
-```bash
-docker-compose up -d
-```
+No Airflow, ative a DAG `crypto_pipeline_complete` e execute manualmente
+clicando em play.
 
-3. **Aguarde 2-3 minutos para inicialização**
+---
 
-4. **Acesse as interfaces:**
-- **Airflow:** http://localhost:8081 (user: `admin` / pass: `admin`)
-- **Metabase:** http://localhost:3001
+## Próximos passos
 
-5. **Ative a DAG no Airflow:**
-- Procure por `crypto_pipeline_complete`
-- Ative o toggle
-- Clique em ▶️ para executar manualmente
+- Testes de qualidade de dados com dbt tests
+- Alertas por Slack ou email em caso de falha
+- Snapshot histórico para análise de séries temporais
+- CI/CD
 
-## 📊 Dashboards Disponíveis
+---
 
-### Dashboard Crypto (Metabase)
-- **Top 10 Criptomoedas** - Ranking por market cap
-- **Variação 24h** - Gráfico de barras
-- **Tendências** - Análise de volatilidade e categorização
-
-## 🔄 Pipeline Automatizado
-
-O Airflow executa automaticamente:
-1. **Extração** - Busca dados da API CoinGecko
-2. **Transformação** - Roda modelos dbt
-3. **Frequência** - A cada 15 minutos
-4. **Retry** - 1 tentativa com delay de 5 minutos
-
-## 📈 Métricas do Pipeline
-
-- **Tempo médio de execução:** ~1 minuto
-- **Volume de dados:** 20 criptomoedas por execução
-- **Uptime:** 24/7
-- **Latência:** < 2 minutos (API → Dashboard)
-
-## 🎓 Aprendizados
-
-Este projeto demonstra:
-- ✅ Extração de dados de APIs REST
-- ✅ Modelagem dimensional (Star Schema)
-- ✅ Transformações SQL com dbt
-- ✅ Orquestração com Airflow
-- ✅ Containerização com Docker
-- ✅ Versionamento de código
-- ✅ Documentação técnica
-
-## 📝 Próximas Melhorias
-
-- [ ] Adicionar testes de qualidade de dados (dbt tests)
-- [ ] Implementar alertas (Slack/Email)
-- [ ] Criar snapshot para análise histórica
-- [ ] Adicionar mais fontes de dados
-- [ ] Implementar CI/CD
-
-## 👨‍💻 Autor
+## Autor
 
 **Luciendel Alves**
-- GitHub: [@luciendelalves](https://github.com/luciendelalves)
-- LinkedIn: [Luciendel Alves](https://www.linkedin.com/in/luciendelalves/)
-
-## 📄 Licença
-
-Este projeto está sob a licença MIT.
+Analista de Risco & PLD — iGaming
+[LinkedIn](https://www.linkedin.com/in/luciendel-alves-008321107/) ·
+[GitHub](https://github.com/luciendelalves)
