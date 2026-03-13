@@ -1,0 +1,74 @@
+<svg width="650" height="580" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+
+  <!-- Background -->
+  <rect width="650" height="580" fill="#1a1a2e" rx="12"/>
+
+  <!-- Title -->
+  <text x="325" y="40" text-anchor="middle" fill="#ffffff" font-size="16" font-weight="bold">Crypto Data Pipeline - Arquitetura</text>
+
+  <!-- Airflow badge (top right) -->
+  <rect x="480" y="55" width="140" height="30" rx="6" fill="#017cee" opacity="0.2" stroke="#017cee" stroke-width="1"/>
+  <text x="550" y="75" text-anchor="middle" fill="#017cee" font-size="11">Apache Airflow (15 min)</text>
+
+  <!-- Step 1: API -->
+  <rect x="200" y="70" width="220" height="50" rx="8" fill="#2d2d5e" stroke="#6c63ff" stroke-width="1.5"/>
+  <text x="310" y="90" text-anchor="middle" fill="#a0a0ff" font-size="11" font-weight="bold">FONTE DE DADOS</text>
+  <text x="310" y="108" text-anchor="middle" fill="#ffffff" font-size="12">CoinGecko API</text>
+
+  <!-- Arrow 1 -->
+  <line x1="310" y1="120" x2="310" y2="148" stroke="#6c63ff" stroke-width="1.5"/>
+  <polygon points="304,146 310,158 316,146" fill="#6c63ff"/>
+
+  <!-- Step 2: Python -->
+  <rect x="175" y="158" width="270" height="50" rx="8" fill="#2d2d5e" stroke="#f7c948" stroke-width="1.5"/>
+  <text x="310" y="178" text-anchor="middle" fill="#f7c948" font-size="11" font-weight="bold">EXTRAÇÃO</text>
+  <text x="310" y="196" text-anchor="middle" fill="#ffffff" font-size="12">Python - extract_crypto_data.py</text>
+
+  <!-- Arrow 2 -->
+  <line x1="310" y1="208" x2="310" y2="236" stroke="#6c63ff" stroke-width="1.5"/>
+  <polygon points="304,234 310,246 316,234" fill="#6c63ff"/>
+
+  <!-- Step 3: Raw -->
+  <rect x="150" y="246" width="320" height="60" rx="8" fill="#3d2000" stroke="#cd7f32" stroke-width="1.5"/>
+  <text x="310" y="268" text-anchor="middle" fill="#cd7f32" font-size="11" font-weight="bold">RAW LAYER</text>
+  <text x="310" y="286" text-anchor="middle" fill="#ffffff" font-size="11">PostgreSQL - dado bruto da API</text>
+  <text x="310" y="300" text-anchor="middle" fill="#aaaaaa" font-size="10">schema: raw.crypto_prices</text>
+
+  <!-- Arrow 3 -->
+  <line x1="310" y1="306" x2="310" y2="334" stroke="#6c63ff" stroke-width="1.5"/>
+  <polygon points="304,332 310,344 316,332" fill="#6c63ff"/>
+
+  <!-- Step 4: Staging -->
+  <rect x="150" y="344" width="320" height="60" rx="8" fill="#1a2e1a" stroke="#c0c0c0" stroke-width="1.5"/>
+  <text x="310" y="366" text-anchor="middle" fill="#c0c0c0" font-size="11" font-weight="bold">STAGING LAYER</text>
+  <text x="310" y="384" text-anchor="middle" fill="#ffffff" font-size="11">dbt - limpeza e padronização</text>
+  <text x="310" y="398" text-anchor="middle" fill="#aaaaaa" font-size="10">schema: staging.stg_crypto_prices</text>
+
+  <!-- Arrow 4 -->
+  <line x1="310" y1="404" x2="310" y2="432" stroke="#6c63ff" stroke-width="1.5"/>
+  <polygon points="304,430 310,442 316,430" fill="#6c63ff"/>
+
+  <!-- Step 5: Analytics -->
+  <rect x="150" y="442" width="320" height="60" rx="8" fill="#2e2a00" stroke="#ffd700" stroke-width="1.5"/>
+  <text x="310" y="464" text-anchor="middle" fill="#ffd700" font-size="11" font-weight="bold">ANALYTICS LAYER</text>
+  <text x="310" y="482" text-anchor="middle" fill="#ffffff" font-size="11">dbt - volatilidade, market cap, tendência</text>
+  <text x="310" y="496" text-anchor="middle" fill="#aaaaaa" font-size="10">schema: analytics.crypto_metrics</text>
+
+  <!-- Arrow 5 -->
+  <line x1="310" y1="502" x2="310" y2="528" stroke="#6c63ff" stroke-width="1.5"/>
+  <polygon points="304,526 310,538 316,526" fill="#6c63ff"/>
+
+  <!-- Step 6: Metabase -->
+  <rect x="175" y="538" width="270" height="28" rx="8" fill="#1a1a3e" stroke="#4fc3f7" stroke-width="1.5"/>
+  <text x="310" y="557" text-anchor="middle" fill="#4fc3f7" font-size="12" font-weight="bold">Metabase Dashboard</text>
+
+  <!-- Stack info -->
+  <text x="22" y="480" fill="#888888" font-size="10">Stack:</text>
+  <text x="22" y="494" fill="#888888" font-size="10">Python</text>
+  <text x="22" y="508" fill="#888888" font-size="10">Airflow</text>
+  <text x="22" y="522" fill="#888888" font-size="10">PostgreSQL</text>
+  <text x="22" y="536" fill="#888888" font-size="10">dbt</text>
+  <text x="22" y="550" fill="#888888" font-size="10">Metabase</text>
+  <text x="22" y="564" fill="#888888" font-size="10">Docker</text>
+
+</svg>
