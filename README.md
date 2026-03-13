@@ -25,16 +25,16 @@ API pública CoinGecko, sem autenticação, com dados de preço, volume e market
 ## Decisões de Arquitetura
 
 **Por que Airflow para orquestração?**
-O pipeline precisa ser executado a cada 15 minutos de forma confiavel, com logs de execucao e possibilidade de reprocessamento em caso de falha. O Airflow resolve isso nativamente com DAGs, sem precisar gerenciar cron jobs manualmente.
+O pipeline precisa ser executado a cada 15 minutos de forma confiável, com logs de execução e possibilidade de reprocessamento em caso de falha. O Airflow resolve isso nativamente com DAGs, sem precisar gerenciar cron jobs manualmente.
 
-**Por que dbt para transformacao?**
-O dbt separa claramente a responsabilidade de transformacao do codigo de extração. Cada modelo e uma query SQL versionada, testavel e documentada. Isso torna o pipeline mais facil de manter e auditar.
+**Por que dbt para transformação?**
+O dbt separa claramente a responsabilidade de transformação do código de extração. Cada modelo é uma query SQL versionada, testável e documentada. Isso torna o pipeline mais fácil de manter e auditar.
 
 **Por que PostgreSQL?**
-Volume compativel com banco relacional. PostgreSQL suporta schemas separados por camada (raw, staging, analytics), o que implementa a Medallion Architecture sem precisar de infraestrutura distribuida.
+Volume compatível com banco relacional. PostgreSQL suporta schemas separados por camada (raw, staging, analytics), o que implementa a Medallion Architecture sem precisar de infraestrutura distribuída.
 
 **Por que Docker?**
-O ambiente tem quatro servicos (Python, Airflow, PostgreSQL, Metabase) com dependencias especificas. Docker garante que o pipeline funcione igual em qualquer maquina, sem conflito de versoes.
+O ambiente tem quatro serviços (Python, Airflow, PostgreSQL, Metabase) com dependências específicas. Docker garante que o pipeline funcione igual em qualquer máquina, sem conflito de versões.
 
 ---
 
@@ -43,8 +43,8 @@ O ambiente tem quatro servicos (Python, Airflow, PostgreSQL, Metabase) com depen
 - Python: extração de dados da API
 - Apache Airflow: orquestração do pipeline
 - PostgreSQL: armazenamento em camadas
-- dbt: transformacao e modelagem
-- Metabase: visualizacao
+- dbt: transformação e modelagem
+- Metabase: visualização
 - Docker: containerização do ambiente
 
 ---
@@ -57,7 +57,7 @@ Schema: `raw.crypto_prices`
 **Staging** - dados limpos e padronizados pelo dbt.
 Schema: `staging.stg_crypto_prices`
 
-**Analytics** - métricas prontas para consumo: classificacao de volatilidade (Alta/Média/Baixa), categorização de market cap (Large/Mid/Small Cap) e identificação de tendência (Subindo/Caindo/Estavel).
+**Analytics** - métricas prontas para consumo: classificação de volatilidade (Alta/Média/Baixa), categorização de market cap (Large/Mid/Small Cap) e identificação de tendência (Subindo/Caindo/Estável).
 Schema: `analytics.crypto_metrics`
 
 ---
@@ -91,7 +91,7 @@ crypto-pipeline/
 Pré-requisitos: Docker Desktop e 8GB de RAM. Portas livres: 5433, 8081, 3001.
 
 ```bash
-# 1. Clone o repositorio
+# 1. Clone o repositório
 git clone https://github.com/luciendelalves/crypto-data-pipeline.git
 cd crypto-data-pipeline
 
@@ -129,16 +129,16 @@ models:
           - not_null
 ```
 
-Alem dos testes do dbt, o script de extração valida antes de inserir no banco:
+Além dos testes do dbt, o script de extração valida antes de inserir no banco:
 
 ```python
-assert df['current_price'].isnull().sum() == 0, "Preco nulo encontrado"
+assert df['current_price'].isnull().sum() == 0, "Preço nulo encontrado"
 assert df['id'].duplicated().sum() == 0, "Duplicatas encontradas"
 ```
 
 ---
 
-## Queries Analiticas
+## Queries Analíticas
 
 ```sql
 -- Criptomoedas com maior volatilidade
@@ -170,14 +170,6 @@ ORDER BY total_moedas DESC;
 
 ---
 
-## Próximos Passos
-
-- Alertas por Slack ou email em caso de falha na DAG
-- Snapshot histórico para analise de series temporais
-- CI/CD com GitHub Actions
-
----
-
 ## Descobertas Analíticas
 
 As métricas calculadas na camada analytics revelam padrões interessantes do mercado de criptomoedas.
@@ -189,3 +181,19 @@ As métricas calculadas na camada analytics revelam padrões interessantes do me
 **Tendência:** O pipeline captura momentos distintos do mercado. Em períodos de alta geral, a maioria das moedas aparece como Subindo. Em correções, a categoria Caindo domina, o que permite identificar o sentimento geral do mercado em cada coleta.
 
 > Estes insights foram observados durante a execução do pipeline. Para resultados atualizados, suba o ambiente e consulte o dashboard no Metabase em http://localhost:3001.
+
+---
+
+## Próximos Passos
+
+- Alertas por Slack ou email em caso de falha na DAG
+- Snapshot histórico para análise de séries temporais
+- CI/CD com GitHub Actions
+
+---
+
+## Autor
+
+Luciendel Alves  
+Analista de Risco e PLD  
+LinkedIn: https://www.linkedin.com/in/luciendelalves
